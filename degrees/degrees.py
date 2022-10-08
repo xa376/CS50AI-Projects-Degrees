@@ -70,7 +70,7 @@ def main():
         sys.exit("Person not found.")
 
     path = shortest_path(source, target)
-    print(path)
+    
     if path is None:
         print("Not connected.")
     else:
@@ -126,11 +126,14 @@ def shortest_path(source, target):
                 ids.append(node.state)
                 movie.append(node.action)
                 node = node.parent
-            
-            for id in ids:
-                for movie1 in movie:
-                    thisSet = (movie1, id)
-                    sets.append(thisSet)
+
+            count = 0
+            while count <= len(ids) - 1:
+                thisSet = (movie[count], ids[count])
+                count += 1
+                sets.append(thisSet)
+
+
             sets.reverse()
             # Return a list
             return sets
