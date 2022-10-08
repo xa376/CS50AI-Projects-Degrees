@@ -105,9 +105,9 @@ def shortest_path(source, target):
     # While there are still states left, add states to frontier and check for target states
     while True:
 
-        # If frontier is empty, raise exception
+        # If frontier is empty, returns None
         if frontier.empty():
-            raise Exception("no solution")
+            return None
 
         # Removes current node and gets next node from the frontier
         node = frontier.remove()
@@ -115,7 +115,7 @@ def shortest_path(source, target):
         # Adds current nodes state to explored states set
         explored.add(node.state)
 
-        # For action(movie), state(actor ID) in neighbors of current node, checks if state is target state, else adds state to frontier
+        # For action(movie ID), state(actor ID) in neighbors of current node, checks if state is target state, else adds state to frontier
         for action, state in neighbors_for_person(node.state):
 
             # If the frontier doesn't alreadyhave the state and the state hasn't been explored
@@ -124,35 +124,27 @@ def shortest_path(source, target):
                 # If state(actor ID) is the target(actor ID) state
                 if state == target:
 
-                    # Assigns target node to current node
+                    # Assigns found target node to current node
                     node = Node(state=state, parent=node, action=action)
 
-                    movie = []
-                    ids = []
-                    sets = []
+                    # Declares list to hold path of action, state pairs
+                    pathList = []
 
+                    # While there are nodes left in path, appends tuple of current nodes state(actor ID) and action(movie ID) to list
                     while node.parent is not None:
-                        ids.append(node.state)
-                        movie.append(node.action)
+                        actionStateTuple = (node.action, node.state)
+                        pathList.append(actionStateTuple)
                         node = node.parent
 
-                    count = 0
-                    while count <= len(ids) - 1:
-                        thisSet = (movie[count], ids[count])
-                        count += 1
-                        sets.append(thisSet)
+                    # Path was added backwards so needs to be reversed
+                    pathList.reverse()
 
+                    # Return a list of (movie ID), (actor ID) pairs that connect the source to the target
+                    return pathList
 
-                    sets.reverse()
-                    # Return a list
-                    return sets
-
+                # If state is not target, addds node to frontier with current node as parent
                 child = Node(state=state, parent=node, action=action)
                 frontier.add(child)
-
-    # TODO
-    raise NotImplementedError
-
 
 def person_id_for_name(name):
     """
