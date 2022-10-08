@@ -92,58 +92,39 @@ def shortest_path(source, target):
     If no possible path, returns None.
     """
 
-    # Solution
-    solution = []
-
-    # Num of nodes explored
-    nodesChecked = 0
-
-    # Starting Node
+    # Initializes starting node with a state equal to the id of the first actor
     start = Node(state=source, parent=None, action=None)
+    
+    # Initializes the frontier and adds the initial node to it, QueueFrontier() utilizes Bredth-First search technique
     frontier = QueueFrontier()
     frontier.add(start)
     
-    # Return list of movie and person pair with next target
+    # Set contains already explored states
     explored = set()
 
+    # While there are still states left, add states to frontier and check for target states
     while True:
 
-        # If frontier empy, return no solution
+        # If frontier is empty, raise exception
         if frontier.empty():
             raise Exception("no solution")
 
-        # Gets next node from the frontier
+        # Removes current node and gets next node from the frontier
         node = frontier.remove()
-        nodesChecked += 1
 
-        if node.state == target:
-
-            movie = []
-            ids = []
-            sets = []
-
-            while node.parent is not None:
-                ids.append(node.state)
-                movie.append(node.action)
-                node = node.parent
-
-            count = 0
-            while count <= len(ids) - 1:
-                thisSet = (movie[count], ids[count])
-                count += 1
-                sets.append(thisSet)
-
-
-            sets.reverse()
-            # Return a list
-            return sets
-        
-        # Mark node as explored
+        # Adds current nodes state to explored states set
         explored.add(node.state)
 
+        # For action(movie), state(actor ID) in neighbors of current node, checks if state is target state, else adds state to frontier
         for action, state in neighbors_for_person(node.state):
+
+            # If the frontier doesn't alreadyhave the state and the state hasn't been explored
             if not frontier.contains_state(state) and state not in explored:
+
+                # If state(actor ID) is the target(actor ID) state
                 if state == target:
+
+                    # Assigns target node to current node
                     node = Node(state=state, parent=node, action=action)
 
                     movie = []
